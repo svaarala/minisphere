@@ -9,7 +9,9 @@ if (typeof exports === 'undefined')
 	throw new TypeError("script must be loaded with require()");
 }
 
-var prerender =
+const gfx = require('gfx');
+
+var render =
 module.exports = (function()
 {
 	return {

@@ -9,6 +9,7 @@ if (typeof exports === 'undefined')
     throw new TypeError("script must be loaded with require()");
 }
 
+const audio   = require('audio');
 const console = require('./console');
 const scenes  = require('./scenes');
 
@@ -18,7 +19,7 @@ module.exports = (function()
 	var adjuster = null;
 	var currentSound = null;
 	var haveOverride = false;
-	var mixer = new Mixer(44100, 16, 2);
+	var mixer = new audio.Mixer(44100, 16, 2);
 	var oldSounds = [];
 	var topmostSound = null;
 
@@ -78,9 +79,9 @@ module.exports = (function()
 				.run();
 		}
 		if (path !== null) {
-			var stream = new Sound(path, mixer);
+			var stream = new audio.Sound(path);
 			stream.volume = 0.0;
-			stream.play(true);
+			stream.play(mixer);
 			var fader = new scenes.Scene()
 				.tween(stream, fadeTime, 'linear', { volume: 1.0 })
 			var newSound = { stream: stream, fader: fader };
@@ -167,7 +168,6 @@ module.exports = (function()
 		currentSound = topmostSound;
 		if (currentSound !== null) {
 			currentSound.stream.volume = 0.0;
-			currentSound.stream.play();
 			currentSound.fader.stop();
 			currentSound.fader = new scenes.Scene()
 				.tween(currentSound.stream, fadeTime, 'linear', { volume: 1.0 })
@@ -205,7 +205,6 @@ module.exports = (function()
 		currentSound = topmostSound;
 		if (currentSound !== null) {
 			currentSound.stream.volume = 0.0;
-			currentSound.stream.play();
 			currentSound.fader.stop();
 			currentSound.fader = new scenes.Scene()
 				.tween(currentSound.stream, fadeTime, 'linear', { volume: 1.0 })

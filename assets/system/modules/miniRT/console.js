@@ -9,6 +9,8 @@ if (typeof exports === 'undefined')
 	throw new TypeError("script must be loaded with require()");
 }
 
+const debug   = require('debug');
+const gfx     = require('gfx');
 const link    = require('link');
 const scenes  = require('./scenes');
 const threads = require('./threads');
@@ -275,7 +277,7 @@ module.exports = (function() {
 	{
 		if (nextLine > 0) {
 			var lineText = buffer[(nextLine - 1) % bufferSize];
-			DebugPrint(lineText.substr(1));
+			debug.print(lineText.substr(1));
 			if (log !== null)
 				logger.write(lineText);
 		}

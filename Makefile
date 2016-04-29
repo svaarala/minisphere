@@ -18,17 +18,17 @@ engine_sources=src/engine/main.c \
    src/shared/duktape.c src/shared/dyad.c src/shared/mt19937ar.c \
    src/shared/lstring.c src/shared/path.c src/shared/unicode.c \
    src/shared/vector.c \
-   src/engine/animation.c src/engine/api.c src/engine/async.c \
-   src/engine/atlas.c src/engine/audialis.c src/engine/bytearray.c \
+   src/engine/api/engine_api.c src/engine/api/audio_api.c \
+   src/engine/api/debug_api.c src/engine/api/fs_api.c src/engine/api/gfx_api.c \
+   src/engine/api/net_api.c src/engine/api/random_api.c \
+   src/engine/api.c src/engine/async.c src/engine/atlas.c src/engine/audio.c \
    src/engine/color.c src/engine/console.c src/engine/debugger.c \
-   src/engine/file.c src/engine/font.c src/engine/galileo.c \
-   src/engine/geometry.c src/engine/image.c src/engine/input.c \
-   src/engine/logger.c src/engine/map_engine.c src/engine/matrix.c \
-   src/engine/obsmap.c src/engine/persons.c src/engine/rng.c \
-   src/engine/screen.c src/engine/script.c src/engine/shader.c \
-   src/engine/sockets.c src/engine/spherefs.c src/engine/spk.c \
-   src/engine/spriteset.c src/engine/surface.c src/engine/tileset.c \
-   src/engine/transpiler.c src/engine/utility.c src/engine/windowstyle.c
+   src/engine/file.c src/engine/font.c src/engine/geometry.c src/engine/image.c \
+   src/engine/input.c src/engine/logger.c src/engine/matrix.c \
+   src/engine/primitives.c src/engine/rng.c src/engine/screen.c \
+   src/engine/script.c src/engine/shader.c src/engine/sockets.c \
+   src/engine/spherefs.c src/engine/spk.c src/engine/transpiler.c \
+   src/engine/utility.c
 engine_libs= \
    -lallegro_acodec -lallegro_audio -lallegro_color -lallegro_dialog \
    -lallegro_image -lallegro_memfile -lallegro_primitives -lallegro \

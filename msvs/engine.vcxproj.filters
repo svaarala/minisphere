@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\api">
+      <UniqueIdentifier>{9f8dea46-2d4c-4ffb-a2cf-1ab18c1141fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\api">
+      <UniqueIdentifier>{c668921b-0b78-4b14-88cb-c89fc693dfec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\shared\duktape.c">
@@ -39,9 +45,6 @@
     <ClCompile Include="..\src\engine\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\engine\animation.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\engine\api.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,12 +52,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\engine\atlas.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\audialis.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\bytearray.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\engine\color.c">
@@ -72,9 +69,6 @@
     <ClCompile Include="..\src\engine\font.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\engine\galileo.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\engine\geometry.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,18 +79,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\engine\logger.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\map_engine.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\obsmap.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\persons.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\rng.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\engine\script.c">
@@ -114,19 +96,7 @@
     <ClCompile Include="..\src\engine\spk.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\engine\spriteset.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\surface.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\tileset.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\engine\utility.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\engine\windowstyle.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\engine\screen.c">
@@ -136,6 +106,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\engine\matrix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\primitives.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\audio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\api\audio_api.c">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\api\random_api.c">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\api\engine_api.c">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\api\net_api.c">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\api\gfx_api.c">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\api\debug_api.c">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\api\fs_api.c">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\rng.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -170,9 +170,6 @@
     <ClInclude Include="..\src\engine\minisphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\engine\animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\engine\api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -180,12 +177,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\engine\atlas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\audialis.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\bytearray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\engine\color.h">
@@ -206,9 +197,6 @@
     <ClInclude Include="..\src\engine\font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\engine\galileo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\engine\geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -219,15 +207,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\engine\logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\map_engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\obsmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\persons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\engine\rng.h">
@@ -248,19 +227,7 @@
     <ClInclude Include="..\src\engine\spk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\engine\spriteset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\surface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\tileset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\engine\utility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\engine\windowstyle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -275,6 +242,33 @@
     <ClInclude Include="..\src\engine\matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\engine\primitives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\api\audio_api.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\api\random_api.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\api\engine_api.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\api\net_api.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\api\gfx_api.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\api\debug_api.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\api\fs_api.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="minisphere.rc">
@@ -283,6 +277,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="minisphere.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="spherical.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

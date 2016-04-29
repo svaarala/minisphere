@@ -195,7 +195,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>libmng.lib;zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
@@ -221,7 +221,7 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>libmng.lib;zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
@@ -253,7 +253,7 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libmng.lib;zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>lib64</AdditionalLibraryDirectories>
@@ -286,7 +286,7 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libmng.lib;zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>lib</AdditionalLibraryDirectories>
@@ -319,7 +319,7 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libmng.lib;zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>lib64</AdditionalLibraryDirectories>
@@ -351,7 +351,7 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libmng.lib;zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>lib</AdditionalLibraryDirectories>
@@ -364,6 +364,13 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\engine\api\audio_api.c" />
+    <ClCompile Include="..\src\engine\api\debug_api.c" />
+    <ClCompile Include="..\src\engine\api\engine_api.c" />
+    <ClCompile Include="..\src\engine\api\fs_api.c" />
+    <ClCompile Include="..\src\engine\api\gfx_api.c" />
+    <ClCompile Include="..\src\engine\api\net_api.c" />
+    <ClCompile Include="..\src\engine\api\random_api.c" />
     <ClCompile Include="..\src\engine\matrix.c" />
     <ClCompile Include="..\src\engine\screen.c" />
     <ClCompile Include="..\src\engine\transpiler.c" />
@@ -375,38 +382,36 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
     <ClCompile Include="..\src\shared\unicode.c" />
     <ClCompile Include="..\src\shared\vector.c" />
     <ClCompile Include="..\src\engine\main.c" />
-    <ClCompile Include="..\src\engine\animation.c" />
     <ClCompile Include="..\src\engine\api.c" />
     <ClCompile Include="..\src\engine\async.c" />
     <ClCompile Include="..\src\engine\atlas.c" />
-    <ClCompile Include="..\src\engine\audialis.c" />
-    <ClCompile Include="..\src\engine\bytearray.c" />
+    <ClCompile Include="..\src\engine\audio.c" />
     <ClCompile Include="..\src\engine\color.c" />
     <ClCompile Include="..\src\engine\console.c" />
     <ClCompile Include="..\src\engine\debugger.c" />
     <ClCompile Include="..\src\engine\file.c" />
     <ClCompile Include="..\src\engine\font.c" />
-    <ClCompile Include="..\src\engine\galileo.c" />
+    <ClCompile Include="..\src\engine\primitives.c" />
     <ClCompile Include="..\src\engine\geometry.c" />
     <ClCompile Include="..\src\engine\image.c" />
     <ClCompile Include="..\src\engine\input.c" />
     <ClCompile Include="..\src\engine\logger.c" />
-    <ClCompile Include="..\src\engine\map_engine.c" />
-    <ClCompile Include="..\src\engine\obsmap.c" />
-    <ClCompile Include="..\src\engine\persons.c" />
     <ClCompile Include="..\src\engine\rng.c" />
     <ClCompile Include="..\src\engine\script.c" />
     <ClCompile Include="..\src\engine\shader.c" />
     <ClCompile Include="..\src\engine\sockets.c" />
     <ClCompile Include="..\src\engine\spherefs.c" />
     <ClCompile Include="..\src\engine\spk.c" />
-    <ClCompile Include="..\src\engine\spriteset.c" />
-    <ClCompile Include="..\src\engine\surface.c" />
-    <ClCompile Include="..\src\engine\tileset.c" />
     <ClCompile Include="..\src\engine\utility.c" />
-    <ClCompile Include="..\src\engine\windowstyle.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\engine\api\audio_api.h" />
+    <ClInclude Include="..\src\engine\api\debug_api.h" />
+    <ClInclude Include="..\src\engine\api\engine_api.h" />
+    <ClInclude Include="..\src\engine\api\fs_api.h" />
+    <ClInclude Include="..\src\engine\api\gfx_api.h" />
+    <ClInclude Include="..\src\engine\api\net_api.h" />
+    <ClInclude Include="..\src\engine\api\random_api.h" />
     <ClInclude Include="..\src\engine\matrix.h" />
     <ClInclude Include="..\src\engine\screen.h" />
     <ClInclude Include="..\src\engine\transpiler.h" />
@@ -420,12 +425,10 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
     <ClInclude Include="..\src\shared\vector.h" />
     <ClInclude Include="..\src\shared\version.h" />
     <ClInclude Include="..\src\engine\minisphere.h" />
-    <ClInclude Include="..\src\engine\animation.h" />
     <ClInclude Include="..\src\engine\api.h" />
     <ClInclude Include="..\src\engine\async.h" />
     <ClInclude Include="..\src\engine\atlas.h" />
-    <ClInclude Include="..\src\engine\audialis.h" />
-    <ClInclude Include="..\src\engine\bytearray.h" />
+    <ClInclude Include="..\src\engine\audio.h" />
     <ClInclude Include="..\src\engine\color.h" />
     <ClInclude Include="..\src\engine\console.h" />
     <ClInclude Include="..\src\engine\debugger.h" />
@@ -436,21 +439,14 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
     <ClInclude Include="..\src\engine\image.h" />
     <ClInclude Include="..\src\engine\input.h" />
     <ClInclude Include="..\src\engine\logger.h" />
-    <ClInclude Include="..\src\engine\map_engine.h" />
-    <ClInclude Include="..\src\engine\galileo.h" />
-    <ClInclude Include="..\src\engine\obsmap.h" />
-    <ClInclude Include="..\src\engine\persons.h" />
+    <ClInclude Include="..\src\engine\primitives.h" />
     <ClInclude Include="..\src\engine\rng.h" />
     <ClInclude Include="..\src\engine\script.h" />
     <ClInclude Include="..\src\engine\shader.h" />
     <ClInclude Include="..\src\engine\sockets.h" />
     <ClInclude Include="..\src\engine\spherefs.h" />
     <ClInclude Include="..\src\engine\spk.h" />
-    <ClInclude Include="..\src\engine\spriteset.h" />
-    <ClInclude Include="..\src\engine\surface.h" />
-    <ClInclude Include="..\src\engine\tileset.h" />
     <ClInclude Include="..\src\engine\utility.h" />
-    <ClInclude Include="..\src\engine\windowstyle.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -458,6 +454,7 @@ xcopy /y /d /e /f "..\docs\*-api.txt" "$(OutDir)documentation\"</Command>
   </ItemGroup>
   <ItemGroup>
     <Image Include="minisphere.ico" />
+    <Image Include="spherical.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

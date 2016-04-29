@@ -9,49 +9,26 @@ if (typeof exports === 'undefined')
     throw new TypeError("script must be loaded with require()");
 }
 
-const link = require('link');
+const debug = require('debug');
+const gfx   = require('gfx');
+const link  = require('link');
 
 // threads object
 // represents the threader.
 var threads =
 module.exports = (function()
 {
-	var _SetFrameRate = SetFrameRate;
-	var _SetMapEngineFrameRate = SetMapEngineFrameRate;
-	var _SetRenderScript = SetRenderScript;
-	var _SetUpdateScript = SetUpdateScript;
-	var _MapEngine = MapEngine;
-	
 	var currentSelf = 0;
-	var hasUpdated = false;
-	var frameRate = 60;
-	var manifest = GetGameManifest();
 	var nextThreadID = 1;
 	var threads = [];
 	
-	if ('frameRate' in manifest && typeof manifest.frameRate === 'number')
-		frameRate = manifest.frameRate;
 	var threadSorter = function(a, b) {
 		return a.priority != b.priority ?
 			a.priority - b.priority :
 			a.id - b.id;
 	};
 	
-	_SetUpdateScript(updateAll);
-	_SetRenderScript(renderAll);
-	_SetFrameRate(frameRate);
-	_SetMapEngineFrameRate(frameRate);
-
-	// the threading system commandeers several legacy APIs, making them unsafe
-	// to use without messing with the operation of miniRT, so we disable them.
-	// for MapEngine(), just override the framerate.
-	MapEngine = function(mapName) { _MapEngine(mapName, frameRate); }
-	SetUpdateScript = SetRenderScript = SetFrameRate = SetMapEngineFrameRate
-		= function() { Abort("API incompatible with miniRT/threads", -1); }
-
 	return {
-		get frameRate() { return frameRate; },
-		set frameRate(value) { set_frameRate(value); },
 		create:    create,
 		createEx:  createEx,
 		isRunning: isRunning,
@@ -64,31 +41,11 @@ module.exports = (function()
 
 	function doFrame()
 	{
-		if (IsMapEngineRunning())
-			RenderMap();
-		else
-			renderAll();
-		FlipScreen();
-		if (IsMapEngineRunning()) {
-			hasUpdated = false;
-			UpdateMapEngine();
-			if (!hasUpdated)
-				updateAll();
-		} else {
-			updateAll();
-		}
+		renderAll();
+		gfx.flip();
+		updateAll();
 	};
 
-	// threads.frameRate (read/write)
-	// gets or sets the miniRT frame rate.  this should be used instead of
-	// SetFrameRate(), which will throw an error if called.
-	function set_frameRate(value)
-	{
-		frameRate = Math.floor(Math.max(value, 1));
-		_SetFrameRate(frameRate);
-		_SetMapEngineFrameRate(frameRate);
-	}
-	
 	// threads.create()
 	// create an object thread.  this is the recommended thread creation method.
 	// arguments:
@@ -99,7 +56,7 @@ module.exports = (function()
 	//               later in a frame than lower-priority ones.  ignored if no renderer is provided. (default: 0)
 	function create(entity, priority)
 	{
-		Assert(entity instanceof Object || entity === null, "create() argument must be a valid object", -1);
+		debug.assert(entity instanceof Object || entity === null, "argument must be a valid object");
 
 		priority = priority !== undefined ? priority : 0;
 
@@ -130,7 +87,7 @@ module.exports = (function()
 	//     threads.create() instead.
 	function createEx(that, threadDesc)
 	{
-		Assert(arguments.length >= 2, "threads.createEx() expects 2 arguments", -1);
+		debug.assert(arguments.length >= 2, "2 arguments expected");
 
 		var update = threadDesc.update.bind(that);
 		var render = typeof threadDesc.render === 'function'
@@ -198,7 +155,6 @@ module.exports = (function()
 	// Renders the current frame by calling all active threads' renderers.
 	function renderAll()
 	{
-		if (IsSkippedFrame()) return;
 		link(link(threads).sort(threadSorter))
 			.where(function(thread) { return thread.isValid; })
 			.where(function(thread) { return thread.renderer !== undefined; })
@@ -243,6 +199,5 @@ module.exports = (function()
 		{
 			kill(threadID);
 		});
-		hasUpdated = true;
 	}
 })();

@@ -20,6 +20,4 @@ void      shader_free        (shader_t* shader);
 bool      apply_shader       (shader_t* shader);
 void      reset_shader       (void);
 
-void init_shader_api (void);
-
 #endif // MINISPHERE__SHADER_H__INCLUDED

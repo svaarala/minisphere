@@ -12,10 +12,13 @@ if (typeof exports === 'undefined')
     throw new TypeError("script must be loaded with require()");
 }
 
+const audio   = require('audio');
+const gfx     = require('gfx');
 const link    = require('link');
 const threads = require('./threads');
 
-var screenMask = new Color(0, 0, 0, 0);
+var screenMask = gfx.Color(0, 0, 0, 0);
+var mixer = new audio.Mixer(44100, 16, 2);
 
 var scenes =
 module.exports = (function()
@@ -23,7 +26,14 @@ module.exports = (function()
 	renderScenes = function()
 	{
 		if (screenMask.alpha > 0) {
-			ApplyColorMask(screenMask);
+			var width = gfx.screen.width;
+			var height = gfx.screen.height;
+			new gfx.Shape([
+                { x: 0, y: 0, color: screenMask },
+                { x: width, y: 0, color: screenMask },
+                { x: 0, y: height, color: screenMask },
+                { x: width, y: height, color: screenMask },
+			]).draw();
 		}
 	};
 
@@ -32,7 +42,6 @@ module.exports = (function()
 		return true;
 	};
 
-	var manifest = GetGameManifest();
 	var priority = 99;
 	var threadID = threads.create({
 		update: updateScenes,
@@ -61,7 +70,7 @@ module.exports = (function()
 	var scenelet = function(name, def)
 	{
 		if (name in Scene.prototype)
-			Abort("scenes.scenelet(): scenelet ID `" + name + "` already in use", -1);
+			throw new Error("scenelet ID `" + name + "` is already in use");
 		Scene.prototype[name] = function() {
 			this.enqueue({
 				arguments: arguments,
@@ -74,7 +83,7 @@ module.exports = (function()
 			return this;
 		};
 	};
-	
+
 	// Scene()
 	// construct a scene definition.
 	function Scene()
@@ -207,7 +216,7 @@ module.exports = (function()
 		function end()
 		{
 			if (openBlockTypes.length == 0)
-				Abort("Mismatched end() in scene definition", -1);
+				throw new Error("mismatched end() in scene definition");
 			var blockType = openBlockTypes.pop();
 			switch (blockType) {
 				case 'fork':
@@ -245,7 +254,7 @@ module.exports = (function()
 					jump.ifDone = queueToFill.length;
 					break;
 				default:
-					Abort("miniscenes internal error (unknown block type)", -1);
+					throw new Error("miniRT internal error", -1);
 					break;
 			}
 			return this;
@@ -256,7 +265,7 @@ module.exports = (function()
 		function enqueue(command)
 		{
 			if (isRunning())
-				Abort("attempt to modify scene definition during playback", -2);
+				throw new Error("attempt to modify scene definition during playback");
 			queueToFill.push(command);
 		};
 
@@ -309,7 +318,7 @@ module.exports = (function()
 		function run(waitUntilDone)
 		{
 			if (openBlockTypes.length > 0)
-				Abort("unclosed block in scene definition", -1);
+				throw new Error("unclosed block in scene definition");
 			if (isRunning()) return;
 			var ctx = {
 				instructions: queueToFill,
@@ -425,7 +434,7 @@ scenes.scenelet('fadeTo',
 {
 	start: function(scene, color, duration) {
 		duration = duration !== undefined ? duration : 0.25;
-		
+
 		this.fader = new scenes.Scene()
 			.tween(screenMask, duration, 'linear', color)
 			.run();
@@ -445,7 +454,7 @@ scenes.scenelet('focusOnPerson',
 {
 	start: function(scene, person, duration) {
 		duration = duration !== undefined ? duration : 0.25;
-		
+
 		this.pan = new scenes.Scene()
 			.panTo(GetPersonX(person), GetPersonY(person), duration)
 			.run();
@@ -509,7 +518,7 @@ scenes.scenelet('marquee',
 	start: function(scene, text, backgroundColor, color) {
 		if (backgroundColor === undefined) { backgroundColor = new Color(0, 0, 0, 255); }
 		if (color === undefined) { color = new Color(255, 255, 255, 255); }
-		
+
 		this.text = text;
 		this.color = color;
 		this.background = backgroundColor;
@@ -547,7 +556,7 @@ scenes.scenelet('maskPerson',
 {
 	start: function(scene, name, newMask, duration) {
 		duration = duration !== undefined ? duration : 0.25;
-		
+
 		this.name = name;
 		this.mask = GetPersonMask(this.name);
 		this.fade = new scenes.Scene()
@@ -573,7 +582,7 @@ scenes.scenelet('movePerson',
 {
 	start: function(scene, person, direction, distance, speed, faceFirst) {
 		faceFirst = faceFirst !== undefined ? faceFirst : true;
-		
+
 		if (!isNaN(speed)) {
 			speedVector = [ speed, speed ];
 		} else {
@@ -649,7 +658,7 @@ scenes.scenelet('panTo',
 {
 	start: function(scene, x, y, duration) {
 		duration = duration !== undefined ? duration : 0.25;
-		
+
 		DetachCamera();
 		var targetXY = {
 			cameraX: x,
@@ -690,12 +699,12 @@ scenes.scenelet('pause',
 scenes.scenelet('playSound',
 {
 	start: function(scene, fileName) {
-		this.sound = new Sound(fileName);
-		this.sound.play(false);
+		this.sound = new audio.Sound(fileName);
+		this.sound.play(mixer);
 		return true;
 	},
 	update: function(scene) {
-		return this.sound.isPlaying();
+		return this.sound.playing;
 	}
 });
 
@@ -836,7 +845,7 @@ scenes.scenelet('tween',
 				return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
 			},
 			easeInOutBack: function(t, b, c, d, s) {
-				if (s == undefined) s = 1.70158; 
+				if (s == undefined) s = 1.70158;
 				if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
 				return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
 			},

@@ -1,11 +1,7 @@
 #include "minisphere.h"
 #include "shader.h"
 
-#include "api.h"
 #include "matrix.h"
-
-static duk_ret_t js_new_ShaderProgram       (duk_context* ctx);
-static duk_ret_t js_ShaderProgram_finalize  (duk_context* ctx);
 
 struct shader
 {
@@ -128,48 +124,4 @@ reset_shader(void)
 #ifdef MINISPHERE_USE_SHADERS
 	if (s_have_shaders) al_use_shader(NULL);
 #endif
-}
-
-void
-init_shader_api(void)
-{
-	register_api_ctor(g_duk, "ShaderProgram", js_new_ShaderProgram, js_ShaderProgram_finalize);
-}
-
-static duk_ret_t
-js_new_ShaderProgram(duk_context* ctx)
-{
-	const char* fs_filename;
-	const char* vs_filename;
-	shader_t*   shader;
-
-	if (!duk_is_object(ctx, 0))
-		duk_error_ni(ctx, -1, DUK_ERR_TYPE_ERROR, "ShaderProgram(): JS object expected as argument");
-	if (duk_get_prop_string(ctx, 0, "vertex"), !duk_is_string(ctx, -1))
-		duk_error_ni(ctx, -1, DUK_ERR_TYPE_ERROR, "ShaderProgram(): 'vertex' property, string required");
-	if (duk_get_prop_string(ctx, 0, "fragment"), !duk_is_string(ctx, -1))
-		duk_error_ni(ctx, -1, DUK_ERR_TYPE_ERROR, "ShaderProgram(): 'fragment' property, string required");
-	duk_pop_2(ctx);
-
-	if (!are_shaders_active())
-		duk_error_ni(ctx, -1, DUK_ERR_ERROR, "ShaderProgram(): shaders not supported on this system");
-	
-	duk_get_prop_string(ctx, 0, "vertex");
-	duk_get_prop_string(ctx, 0, "fragment");
-	vs_filename = duk_require_path(ctx, -2, NULL, false);
-	fs_filename = duk_require_path(ctx, -1, NULL, false);
-	duk_pop_2(ctx);
-	if (!(shader = shader_new(vs_filename, fs_filename)))
-		duk_error_ni(ctx, -1, DUK_ERR_ERROR, "ShaderProgram(): failed to build shader from `%s`, `%s`", vs_filename, fs_filename);
-	duk_push_sphere_obj(ctx, "ShaderProgram", shader);
-	return 1;
-}
-
-static duk_ret_t
-js_ShaderProgram_finalize(duk_context* ctx)
-{
-	shader_t* shader = duk_require_sphere_obj(ctx, 0, "ShaderProgram");
-
-	shader_free(shader);
-	return 0;
 }

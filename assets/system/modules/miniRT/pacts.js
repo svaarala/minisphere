@@ -9,6 +9,8 @@ if (typeof exports === 'undefined')
     throw new TypeError("script must be loaded with require()");
 }
 
+const engine = require('engine');
+
 var pacts =
 module.exports = (function()
 {
@@ -25,7 +27,7 @@ module.exports = (function()
 		{
 			if (state == 'pending')
 				deferred.push(handler);
-			else DispatchScript(function() {
+			else engine.dispatch(function() {
 				var callback = state == 'fulfilled' ? handler.fulfiller
 					: state == 'rejected' ? handler.rejector
 					: undefined;

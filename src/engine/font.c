@@ -1,11 +1,12 @@
 #include "minisphere.h"
+#include "font.h"
+
 #include "api.h"
+#include "api/gfx_api.h"
 #include "atlas.h"
 #include "color.h"
 #include "image.h"
 #include "unicode.h"
-
-#include "font.h"
 
 static duk_ret_t js_GetSystemFont          (duk_context* ctx);
 static duk_ret_t js_LoadFont               (duk_context* ctx);
@@ -679,7 +680,7 @@ js_Font_getCharacterImage(duk_context* ctx)
 	duk_push_this(ctx);
 	font = duk_require_sphere_obj(ctx, -1, "Font");
 	duk_pop(ctx);
-	duk_push_sphere_image(ctx, get_glyph_image(font, cp));
+	duk_push_sphere_obj(ctx, "Image", get_glyph_image(font, cp));
 	return 1;
 }
 
@@ -720,7 +721,7 @@ static duk_ret_t
 js_Font_setCharacterImage(duk_context* ctx)
 {
 	int cp = duk_require_int(ctx, 0);
-	image_t* image = duk_require_sphere_image(ctx, 1);
+	image_t* image = duk_require_sphere_obj(ctx, 1, "Image");
 
 	font_t* font;
 

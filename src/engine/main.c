@@ -1,15 +1,12 @@
 #include "minisphere.h"
+
 #include "api.h"
 #include "async.h"
-#include "audialis.h"
+#include "audio.h"
 #include "debugger.h"
-#include "galileo.h"
 #include "input.h"
-#include "map_engine.h"
+#include "primitives.h"
 #include "rng.h"
-#include "spriteset.h"
-
-#include <libmng.h>
 
 // enable Windows visual styles (MSVC)
 #ifdef _MSC_VER
@@ -35,7 +32,7 @@ static void on_duk_fatal (duk_context* ctx, duk_errcode_t code, const char* msg)
 
 duk_context*         g_duk = NULL;
 ALLEGRO_EVENT_QUEUE* g_events = NULL;
-int                  g_framerate = 0;
+int                  g_framerate = 60;
 sandbox_t*           g_fs = NULL;
 path_t*              g_game_path = NULL;
 path_t*              g_last_game_path = NULL;
@@ -44,6 +41,7 @@ kevfile_t*           g_sys_conf;
 font_t*              g_sys_font = NULL;
 int                  g_res_x, g_res_y;
 
+static int     s_api_level = 1;
 static jmp_buf s_jmp_exit;
 static jmp_buf s_jmp_restart;
 
@@ -240,6 +238,12 @@ main(int argc, char* argv[])
 	al_flip_display();
 	al_clear_to_color(al_map_rgba(0, 0, 0, 255));
 
+	if (s_api_level < 2.0) {
+		console_log(1, "initializing Sphere 1.x compatibility layer");
+		evaluate_script("~sys/sphere-shim.js");
+		duk_pop(g_duk);
+	}
+
 	// evaluate startup script
 	screen_show_mouse(g_screen, false);
 	script_path = get_sgm_script_path(g_fs);
@@ -306,7 +310,7 @@ do_events(void)
 
 	update_async();
 	update_input();
-	update_audialis();
+	update_audio();
 
 	// process Allegro events
 	while (al_get_next_event(g_events, &event)) {
@@ -430,8 +434,9 @@ initialize_engine(void)
 
 	// initialize Allegro
 	al_version = al_get_allegro_version();
-	console_log(1, "initializing Allegro (%d.%d.%d)",
-		al_version >> 24, (al_version >> 16) & 0xFF, (al_version >> 8) & 0xFF);
+	console_log(1, "initializing Allegro %d.%d.%d.%d",
+		al_version >> 24, (al_version >> 16) & 0xFF, (al_version >> 8) & 0xFF,
+		(al_version & 0xFF) - 1);
 	al_set_org_name("Fat Cerberus");
 	al_set_app_name("minisphere");
 	if (!al_init())
@@ -440,13 +445,8 @@ initialize_engine(void)
 	if (!al_init_primitives_addon()) goto on_error;
 	if (!al_init_image_addon()) goto on_error;
 
-	// initialize networking
-	console_log(1, "initializing Dyad (%s)", dyad_getVersion());
-	dyad_init();
-	dyad_setUpdateTimeout(0.0);
-
 	// initialize JavaScript
-	console_log(1, "initializing Duktape (%s)", DUK_GIT_DESCRIBE);
+	console_log(1, "initializing Duktape %s", DUK_GIT_DESCRIBE);
 	if (!(g_duk = duk_create_heap(NULL, NULL, NULL, NULL, &on_duk_fatal)))
 		goto on_error;
 
@@ -455,13 +455,8 @@ initialize_engine(void)
 	g_sys_conf = kev_open(NULL, "~sys/system.ini");
 
 	// initialize engine components
-	initialize_async();
-	initialize_rng();
 	initialize_galileo();
-	initialize_audialis();
 	initialize_input();
-	initialize_spritesets();
-	initialize_map_engine();
 	initialize_scripts();
 
 	// register the Sphere API
@@ -485,7 +480,6 @@ shutdown_engine(void)
 	shutdown_debugger();
 #endif
 
-	shutdown_map_engine();
 	shutdown_input();
 	shutdown_scripts();
 
@@ -495,10 +489,7 @@ shutdown_engine(void)
 	console_log(1, "shutting down Dyad");
 	dyad_shutdown();
 
-	shutdown_spritesets();
-	shutdown_audialis();
 	shutdown_galileo();
-	shutdown_async();
 
 	console_log(1, "shutting down Allegro");
 	screen_free(g_screen);
@@ -681,6 +672,7 @@ static void
 print_banner(bool want_copyright, bool want_deps)
 {
 	lstring_t* al_version;
+	char*      duk_version;
 	uint32_t   al_version_id;
 	
 	printf("%s JS Game Engine (%s)\n", PRODUCT_NAME, sizeof(void*) == 4 ? "x86" : "x64");
@@ -693,10 +685,10 @@ print_banner(bool want_copyright, bool want_deps)
 		al_version = lstr_newf("%d.%d.%d.%d", al_version_id >> 24,
 			(al_version_id >> 16) & 0xFF, (al_version_id >> 8) & 0xFF,
 			(al_version_id & 0xFF) - 1);
+		duk_version = strnewf("%ld.%ld.%ld", DUK_VERSION / 10000, DUK_VERSION / 100 % 100, DUK_VERSION % 100);
 		printf("\n");
-		printf("    Allegro: v%-8s    libmng: v%s\n", lstr_cstr(al_version), mng_version_text());
-		printf("     Dyad.c: v%-8s      zlib: v%s\n", dyad_getVersion(), zlibVersion());
-		printf("    Duktape: v%ld.%ld.%ld\n", DUK_VERSION / 10000, DUK_VERSION / 100 % 100, DUK_VERSION % 100);
+		printf("    Allegro: v%-8s    Dyad.c: v%s\n", lstr_cstr(al_version), dyad_getVersion());
+		printf("    Duktape: v%-8s      zlib: v%s\n", duk_version, zlibVersion());
 	}
 }
 
@@ -753,11 +745,8 @@ verify_requirements(sandbox_t* fs)
 	// NOTE: before calling this function, the Sphere API must already have been
 	//       initialized using initialize_api().
 
-	const char* extension_name;
 	lstring_t*  message;
 	const char* recommendation = NULL;
-
-	duk_size_t i;
 
 	duk_push_lstring_t(g_duk, get_game_manifest(g_fs));
 	duk_json_decode(g_duk, -1);
@@ -766,29 +755,16 @@ verify_requirements(sandbox_t* fs)
 		if (duk_get_prop_string(g_duk, -1, "recommend")) {
 			if (duk_is_string(g_duk, -1))
 				recommendation = duk_get_string(g_duk, -1);
-			duk_pop(g_duk);
 		}
+		duk_pop(g_duk);
 
 		// check for minimum API version
-		if (duk_get_prop_string(g_duk, -1, "apiVersion")) {
+		if (duk_get_prop_string(g_duk, -1, "apiLevel")) {
 			if (duk_is_number(g_duk, -1)) {
-				if (duk_get_number(g_duk, -1) > get_api_version())
+				s_api_level = duk_get_int(g_duk, -1);
+				if (s_api_level > 2)
 					goto is_unsupported;
 			}
-			duk_pop(g_duk);
-		}
-
-		// check API extensions
-		if (duk_get_prop_string(g_duk, -1, "extensions")) {
-			if (duk_is_array(g_duk, -1))
-				for (i = 0; i < duk_get_length(g_duk, -1); ++i) {
-					duk_get_prop_index(g_duk, -1, (duk_uarridx_t)i);
-					extension_name = duk_get_string(g_duk, -1);
-					duk_pop(g_duk);
-					if (extension_name != NULL && !have_api_extension(extension_name))
-						goto is_unsupported;
-				}
-			duk_pop(g_duk);
 		}
 		duk_pop(g_duk);
 	}

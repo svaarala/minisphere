@@ -45,6 +45,8 @@ initialize_debugger(bool want_attach, bool allow_remote)
 	const path_t* game_path;
 	const char*   hostname;
 
+	initialize_sockets();
+	
 	s_sources = vector_new(sizeof(struct source));
 	
 	// load the source map, if one is available
@@ -97,6 +99,8 @@ shutdown_debugger()
 		}
 		vector_free(s_sources);
 	}
+
+	shutdown_sockets();
 }
 
 void

@@ -1,6 +1,14 @@
 minisphere Changelog
 ====================
 
+v4.0.0 - TBD
+------------
+
+* The API has been completely overhauled.  minisphere now implemets the Pegasus
+  API, which is not backwards compatible with Sphere 1.x games.  Any games
+  written agains the Sphere 1.x API or minisphere 3.x or earlier will need to
+  be refactored to work with the new API.
+
 v3.1.0 - TBD
 ------------
 

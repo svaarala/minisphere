@@ -751,10 +751,10 @@ Color:clone();
     Copies this Color object to a new one.  Changes to the cloned object will
     not affect the original.
 
-Color:red (read/write)
-Color:green (read/write)
-Color:blue (read/write)
-Color:alpha (read/write)
+Color:red [read/write]
+Color:green [read/write]
+Color:blue [read/write]
+Color:alpha [read/write]
 
     Gets or sets the individual components of the color.  Values outside the
     range of [0-255] are accepted, but the engine will automatically clamp them
@@ -785,8 +785,8 @@ new Image(surface);
     Creates an Image object with the contents of a specified surface.  This can
     be used to regain rendering performance after composing the surface.
 
-Image:width (read-only)
-Image:height (read-only)
+Image:width [read-only]
+Image:height [read-only]
 
     Gets the width or height of the image, in pixels.
 
@@ -1001,8 +1001,8 @@ GrabSurface(x, y, width, height);
     created surface is undefined. See the documentation for the Frameskip API
     above for information on how to mitigate this.
 
-Surface:width (read-only)
-Surface:height (read-only)
+Surface:width [read-only]
+Surface:height [read-only]
 
     Gets the width or height of the surface, in pixels.
 
@@ -1035,7 +1035,7 @@ new WindowStyle(filename);
     Constructs a WindowStyle object from a windowstyle file. The file must be in
     Sphere RWS format.
 
-WindowStyle:colorMask (read/write)
+WindowStyle:colorMask [read/write]
 
     Gets or sets the windowstyle color mask.  This is the color that is combined
     with the windowstyle images to tint the rendered window.  If this is not
@@ -1073,12 +1073,12 @@ Font:clone();
     Creates a new Font object by copying everything from this one.
     Modifications to the cloned font then won't affect the original.
 
-Font:colorMask (read/write)
+Font:colorMask [read/write]
 
     Gets or sets the color mask, which is blended with the font bitmaps when
     text is rendered using the font.
 
-Font:height (read-only)
+Font:height [read-only]
 
     Gets the line height, in pixels, for text rendered using this font.
 
@@ -1129,18 +1129,17 @@ Font:drawTextBox(x, y, width, height, x_offset, text);
 Audialis Sound Routines
 -----------------------
 
-Playing sounds and music are both handled in minisphere by Audialis, the
-evolution of Sphere 1.x's audio subsystem.  Audialis allows you to create mixers
-which can be used to adjust certain parameters across all sounds associated with
-that mixer.  This is useful for implementing global volume controls, for
-example.
+Playing sounds and music are both handled in minisphere by Audialis, a
+component of the Sphere 2.0 "Pegasus" API.  Audialis allows you to create
+mixers which can be used to adjust certain parameters across all sounds
+associated with that mixer.  This is useful for implementing global volume
+controls, for example.
 
-GetDefaultMixer();
+To use Audialis, first import the Pegasus `audio` module like so:
 
-    Gets the default Audialis mixer.  The default mixer outputs 44.1 kHz 16-bit
-    sound with two channels, i.e. CD quality.
+    var audio = require('audio');
 
-new Mixer(frequency, bits[, channels]);
+new audio.Mixer(frequency, bits[, channels]);
 
     Constructs a new Mixer object.  Any sounds played through the mixer will use
     the format specified by the parameters above.  `frequency` is the sample
@@ -1152,12 +1151,12 @@ new Mixer(frequency, bits[, channels]);
     not supported by the system, an error will be thrown ("unable to create
     hardware voice").
 
-Mixer:volume (read/write)
+Mixer#volume [read/write]
 
     Gets or sets the output volume of the mixer. This will affect the volume of
     any sounds played through the mixer.
 
-new Sound(filename[, mixer]);
+new audio.Sound(filename);
 
     SphereFS compliant.
 
@@ -1165,78 +1164,65 @@ new Sound(filename[, mixer]);
     formats are Ogg Vorbis (.ogg), WAV, MOD, S3M, IT, and FLAC.  minisphere does
     not support mp3 or MIDI.
 
-    `mixer`, if provided, specifies the mixer which will be used to play the
-    sound.  If no mixer is specified, the built-in stereo mixer will be used.
-    See GetDefaultMixer() above.
-
-Sound:playing (read-only)
-
-    true if the sound is currently playing, false otherwise.
-
-Sound:length (read-only)
+Sound#length [read-only]
 
     Gets the length of the sound in microseconds.
 
-Sound:mixer (read/write)
+Sound#mixer [read-only]
 
-    Gets or sets the mixer used to play the sound.
+    Gets the mixer being used to play the sound.  If the sound is stopped, this
+    will be null.
 
-Sound:pan (read/write)
+Sound#pan [read/write]
 
     Gets or sets the current pan (balance). 0.0 is dead center, -1.0 is full
     left, and 1.0 is full right.
 
-Sound:pitch (read/write)
+Sound#pitch [read/write]
 
     Gets the current relative pitch of the sound. 1.0 is normal.  Note that this
-    is not a true pitch adjustment: the playback speed will be altered.
+    is not a true pitch adjustment: the playback speed will be altered as well.
 
-Sound:position (read/write)
+Sound#playing [read-only]
 
-    Gets or sets the playback position within the sound, in microseconds.
+    true if the sound is currently playing, false otherwise.
 
-Sound:repeat (read/write)
+Sound#position [read/write]
+
+    Gets or sets the playback position within the sound, in seconds.
+
+Sound#repeat [read/write]
 
     Gets or sets whether the sound will automatically repeat when it reaches the
     end.
 
-Sound:seekable (read-only)
+Sound#seekable [read-only]
 
     Gets or sets whether the sound is seekable.  Currently all supported formats
     are seekable, so this will always be true.
 
-Sound:volume (read/write)
+Sound#volume [read/write]
 
     Gets or sets the current volume of the sound.  0.0 is silent, 1.0 is full
     volume.  Higher values are allowed, but may introduce distortion due to
     clipping.
 
-Sound:pause();
+Sound#pause(paused);
 
-    Pauses the sound.  If it is already paused, this has no effect.
+    Pauses the sound if `paused` is true, otherwise resumes a paused sound.  If
+    the sound is stopped, this call has no effect.
 
-Sound:play([is_looping]);
+Sound#play(mixer);
 
-    Begins or resumes sound playback. The semantics of this function are a bit
-    counterintuitive, but match the behavior of Sphere 1.5.  When called with no
-    arguments, Sound:play() resumes a paused sound.  Otherwise, the sound is
-    restarted from the beginning (even if it was already playing).  If
-    `is_looping` is true, the sound will automatically repeat when playback
-    ends.
+    Starts playing the sound.  `mixer` specifies the Mixer on which to play the
+    sound.  If this is called while the sound is already playing, it will be
+    stopped and restarted from the beginning using the new mixer.
 
-Sound:reset();
+Sound#stop();
 
-    Seeks to the beginning of the stream.  Playback state is not altered; if the
-    sound is playing at the time of this call, it simply starts over from the
-    beginning.  Essentially, this has the same effect as setting Sound:position
-    to zero.
+    Stops the sound.  The playback position will be reset to 0.0s.
 
-Sound:stop();
-
-    Stops the sound.  The playback position will be reset to the beginning, even
-    if the sound was not playing.
-
-new SoundStream([frequency[, bits[, channels]]]);
+new audio.SoundStream([frequency[, bits[, channels]]]);
 
     Constructs a sound stream, which plays arbitrary sound data provided by the
     game at runtime.  This may be used, for example, to generate sound
@@ -1247,15 +1233,27 @@ new SoundStream([frequency[, bits[, channels]]]);
 
     The default stream format is 8-bit 22050Hz with 1 channel.
 
-SoundStream:bufferSize (read-only)
+SoundStream#bufferSize [read-only]
 
-    Gets the total number of samples in the stream's buffer.
+    Gets the number of bytes in the stream buffer.
 
-SoundStream:mixer (read/write)
+SoundStream#mixer [read-only]
 
-    Gets or sets the mixer used to play the stream.
+    Gets the mixer being used to play the stream.  If the stream is stopped,
+    this will be null.
 
-SoundStream:play([mixer]);
+SoundStream#buffer(data);
+
+    Writes audio data to the stream buffer.  `data` is an ArrayBuffer,
+    TypedArray or DataView containing the data to write.  Audio data must be fed
+    into a stream continuously while it is playing to prevent interruption.
+
+SoundStream#pause(paused);
+
+    Pauses the stream if `paused` is true, otherwise resumes a paused stream.
+    Has no effect if playback is stopped.
+
+SoundStream#play([mixer]);
 
     Starts the stream playing. Ideally, some audio should be pre-buffered into
     the stream (see SoundStream:write() below) first to minimize the risk of
@@ -1265,21 +1263,11 @@ SoundStream:play([mixer]);
     mixer is provided, Audialis will use the default mixer (see
     GetDefaultMixer()) to play the stream.
 
-SoundStream:pause();
-
-    Temporarily pauses playback of the stream.
-
-SoundStream:stop();
+SoundStream#stop();
 
     Stops playback of the stream and frees its buffer.  This should be called
     when you are done using a stream.  The stream may be reused after a stop()
     call, but you will have to feed new audio data.
-
-SoundStream:write(data);
-
-    Writes audio data to the stream buffer.  `data` is an ArrayBuffer,
-    TypedArray or DataView containing the data to write.  Audio data must be fed
-    into a stream continuously while it is playing to prevent interruption.
 
 
 Byte Arrays
@@ -1308,8 +1296,8 @@ new ByteArray(string);
     the created byte array will be the number of bytes in the string (which may
     be greater than the string length!).
 
-ByteArray:length (read-only)
-ByteArray:size (read-only)
+ByteArray:length [read-only]
+ByteArray:size [read-only]
 
     Gets the size of the byte array, in bytes.
 
@@ -1397,12 +1385,12 @@ new IOSocket(hostname, port);
     socket will be returned even if the connection can be not be made; you must
     call IOSocket:isConnected() to find out when the connection has opened.
 
-IOSocket:remoteAddress (read-only)
+IOSocket:remoteAddress [read-only]
 
     Gets the IP address of the upstream end of the socket.  Throws an error if
     accessed before a connection has been established.
 
-IOSocket:remotePort (read-only)
+IOSocket:remotePort [read-only]
 
     Gets the port that the remote machine is using for the connection.
     Generally not a useful statistic, but it's there if you need it.  Throws an
@@ -1551,12 +1539,12 @@ new RawFile(filename[, is_writable]);
     only.  Otherwise, the file is overwritten (be careful!) and opened for
     writing.  If it cannot be opened for writing, an error will be thrown.
 
-RawFile:position (read/write)
+RawFile:position [read/write]
 
     Gets or sets the current file position.  This determines where the next read
     or write operation will start.
 
-RawFile:size (read-only)
+RawFile:size [read-only]
 
     Gets the current size of the file in bytes.  Can also be specified as
     RawFile:length.
@@ -1612,12 +1600,12 @@ new FileStream(filename, mode);
     A valid mode must be provided, otherwise stream construction will fail and
     throw an error.
 
-FileStream:length (read-only)
-FileStream:size (read-only)
+FileStream:length [read-only]
+FileStream:size [read-only]
 
     Gets the size of the underlying file, in bytes.
 
-FileStream:position (read/write)
+FileStream:position [read/write]
 
     Gets or sets the file position, which determines where in the file the next
     read or write will start from.  Expressed in bytes.
