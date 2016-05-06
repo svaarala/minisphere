@@ -183,18 +183,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\compiler\command.c" />
+    <ClCompile Include="..\src\compiler\project.c" />
     <ClCompile Include="..\src\shared\duktape.c" />
     <ClCompile Include="..\src\shared\lstring.c" />
     <ClCompile Include="..\src\shared\path.c" />
     <ClCompile Include="..\src\shared\unicode.c" />
     <ClCompile Include="..\src\shared\vector.c" />
-    <ClCompile Include="..\src\compiler\assets.c" />
-    <ClCompile Include="..\src\compiler\build.c" />
     <ClCompile Include="..\src\compiler\main.c" />
     <ClCompile Include="..\src\compiler\spk_writer.c" />
     <ClCompile Include="..\src\compiler\utility.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\compiler\command.h" />
+    <ClInclude Include="..\src\compiler\project.h" />
     <ClInclude Include="..\src\shared\duktape.h" />
     <ClInclude Include="..\src\shared\duk_config.h" />
     <ClInclude Include="..\src\shared\lstring.h" />
@@ -203,8 +205,6 @@
     <ClInclude Include="..\src\shared\unicode.h" />
     <ClInclude Include="..\src\shared\vector.h" />
     <ClInclude Include="..\src\shared\version.h" />
-    <ClInclude Include="..\src\compiler\assets.h" />
-    <ClInclude Include="..\src\compiler\build.h" />
     <ClInclude Include="..\src\compiler\cell.h" />
     <ClInclude Include="..\src\compiler\posix.h" />
     <ClInclude Include="..\src\compiler\spk_writer.h" />

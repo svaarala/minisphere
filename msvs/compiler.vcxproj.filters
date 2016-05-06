@@ -33,16 +33,16 @@
     <ClCompile Include="..\src\shared\vector.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\compiler\assets.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\compiler\build.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\compiler\spk_writer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\compiler\utility.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\compiler\command.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\compiler\project.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,12 +74,6 @@
     <ClInclude Include="..\src\compiler\cell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\compiler\assets.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\compiler\build.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\compiler\posix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -92,9 +86,15 @@
     <ClInclude Include="resource1.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\compiler\command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\compiler\project.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="cell.rc">
+    <ResourceCompile Include="compiler.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
