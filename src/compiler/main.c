@@ -23,7 +23,6 @@ main(int argc, char* argv[])
 		if (project == NULL) {
 			project = project_new(path, "Untitled");
 			project_save(project);
-			printf("cell: create game manifest `%s`\n", path_cstr(path));
 		}
 		else {
 			printf("cell: game.s2gm already exists here, nothing to do\n");

@@ -65,7 +65,7 @@ command_action(const command_t* cmd)
 static void
 print_banner(bool want_copyright, bool want_deps)
 {
-	printf("Cell %s Sphere Game Packager (%s)\n", VERSION_NAME, sizeof(void*) == 8 ? "x64" : "x86");
+	printf("Cell %s Sphere Project Prep Tool (%s)\n", VERSION_NAME, sizeof(void*) == 8 ? "x64" : "x86");
 	if (want_copyright) {
 		printf("a programmable build engine for Sphere games\n");
 		printf("(c) 2015-2016 Fat Cerberus\n");

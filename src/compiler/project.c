@@ -28,6 +28,11 @@ project_new(const path_t* path, const char* title)
 	proj->js_ctx = js_ctx;
 	proj->manifest_idx = duk_normalize_index(js_ctx, -1);
 	proj->path = file_path;
+	
+	printf("preparing new manifest `%s`\n", path_cstr(file_path));
+	project_set_title(proj, "Untitled");
+	project_set_author(proj, "Author Unknown");
+	project_set_res(proj, 320, 240);
 	return proj;
 }
 
@@ -82,6 +87,13 @@ project_set_author(project_t* proj, const char* name)
 }
 
 void
+project_set_res(project_t* proj, int width, int height)
+{
+	duk_push_sprintf(proj->js_ctx, "%dx%d", width, height);
+	duk_put_prop_string(proj->js_ctx, proj->manifest_idx, "resolution");
+}
+
+void
 project_set_summary(project_t* proj, const char* summary)
 {
 	duk_push_string(proj->js_ctx, summary);
@@ -101,6 +113,8 @@ project_save(project_t* proj)
 	FILE*   file;
 	path_t* path;
 
+	printf("writing manifest `%s`\n", path_cstr(proj->path));
+	
 	duk_dup(proj->js_ctx, proj->manifest_idx);
 	duk_json_encode(proj->js_ctx, -1);
 	path = path_resolve(path_new("./"), NULL);
